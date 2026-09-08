@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-service
+  namespace: exam-board
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: admin-service
+
+  template:
+    metadata:
+      labels:
+        app: admin-service
+
+    spec:
+      containers:
+        - name: admin-service
+          image: shahiddevops1/exam-result-system-admin_service
+
+          ports:
+            - containerPort: 8001
+              protocol: TCP
+
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_DB
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: POSTGRES_HOST
+              value: postgres
+
+            - name: POSTGRES_PORT
+              value: "5432"
+
+            - name: DJANGO_SECRET_KEY
+              value: "change-this-secret-key"
+
+            - name: DEBUG
+              value: "True"
+
+            - name: STUDENT_PORTAL_URL
+              value: "http://student-service:8000"
+
+            - name: DEFAULT_ADMIN_USERNAME
+              value: "admin"
+
+            - name: DEFAULT_ADMIN_PASSWORD
+              value: "Admin@12345"
+
+            - name: DEFAULT_ADMIN_EMAIL
+              value: "admin@example.com"
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
