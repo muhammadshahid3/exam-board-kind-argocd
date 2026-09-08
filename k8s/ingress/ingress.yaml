@@ -12,6 +12,8 @@ spec:
   rules:
     - http:
         paths:
+
+          # Admin
           - path: /admin
             pathType: Prefix
             backend:
@@ -20,10 +22,43 @@ spec:
                 port:
                   number: 8001
 
+          - path: /dashboard
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service
+                port:
+                  number: 8001
+
+          - path: /login
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service
+                port:
+                  number: 8001
+
+          - path: /logout
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service
+                port:
+                  number: 8001
+
+          - path: /static
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service
+                port:
+                  number: 8001
+
+          # Student
           - path: /student
             pathType: Prefix
             backend:
               service:
                 name: student-service
                 port:
-                  number: 8082
+                  number: 8000
