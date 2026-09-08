@@ -21,3 +21,12 @@ spec:
                 name: student-service
                 port:
                   number: 8000
+
+          # Admin Service
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service
+                port:
+                  number: 8001
