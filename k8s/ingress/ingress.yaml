@@ -1,19 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: exam-board-ingress
+  name: admin-ingress
   namespace: exam-board
   annotations:
     argocd.argoproj.io/sync-wave: "6"
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
-
   rules:
     - http:
         paths:
-
-          # Admin
           - path: /admin
             pathType: Prefix
             backend:
@@ -54,7 +50,19 @@ spec:
                 port:
                   number: 8001
 
-          # Student
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: student-ingress
+  namespace: exam-board
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
           - path: /student
             pathType: Prefix
             backend:
