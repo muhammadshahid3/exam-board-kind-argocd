@@ -5,6 +5,7 @@ metadata:
   namespace: exam-board
   annotations:
     argocd.argoproj.io/sync-wave: "6"
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
 
@@ -12,54 +13,8 @@ spec:
     - http:
         paths:
 
-          # =========================
-          # ADMIN SERVICE
-          # =========================
-          - path: /admin
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
-
-          - path: /dashboard
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
-
-          - path: /login
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
-
-          - path: /logout
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
-
-          # =========================
-          # STUDENT SERVICE
-          # =========================
+          # Student Service
           - path: /student
-            pathType: Prefix
-            backend:
-              service:
-                name: student-service
-                port:
-                  number: 8000
-
-          # Student static files
-          - path: /static
             pathType: Prefix
             backend:
               service:
