@@ -1,69 +1,104 @@
+# =========================================================
+# ADMIN INGRESS
+# =========================================================
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: admin-ingress
   namespace: exam-board
+
   annotations:
     argocd.argoproj.io/sync-wave: "6"
+
+    # /admin/... -> /...
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
 spec:
   ingressClassName: nginx
+
   rules:
     - http:
         paths:
-          - path: /admin
-            pathType: Prefix
+
+          # -----------------------------------------------
+          # ADMIN APPLICATION
+          # /admin       -> /
+          # /admin/login -> /login
+          # /admin/dashboard -> /dashboard
+          # -----------------------------------------------
+          - path: /admin(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: admin-service
                 port:
                   number: 8001
 
-          - path: /dashboard
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
 
-          - path: /login
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
+# =========================================================
+# STUDENT INGRESS
+# =========================================================
 
-          - path: /logout
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
-
-          - path: /static
-            pathType: Prefix
-            backend:
-              service:
-                name: admin-service
-                port:
-                  number: 8001
-
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: student-ingress
   namespace: exam-board
+
   annotations:
     argocd.argoproj.io/sync-wave: "6"
-    nginx.ingress.kubernetes.io/rewrite-target: /
+
+    # /student/... -> /...
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
 spec:
   ingressClassName: nginx
+
   rules:
     - http:
         paths:
-          - path: /student
+
+          # -----------------------------------------------
+          # STUDENT APPLICATION
+          # /student       -> /
+          # /student/login -> /login
+          # -----------------------------------------------
+          - path: /student(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: student-service
+                port:
+                  number: 8000
+
+
+# =========================================================
+# STUDENT STATIC FILES
+# =========================================================
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: student-static-ingress
+  namespace: exam-board
+
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+
+spec:
+  ingressClassName: nginx
+
+  rules:
+    - http:
+        paths:
+
+          # /static/... -> student-service
+          - path: /static
             pathType: Prefix
             backend:
               service:
