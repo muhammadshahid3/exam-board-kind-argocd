@@ -23,7 +23,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
-          context: ./admin_service
+          context: ./admincode
           push: true
           tags: |
             shahiddevops1/exam-result-system-admin_service:latest
